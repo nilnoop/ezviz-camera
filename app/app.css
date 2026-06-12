@@ -1,16 +1,313 @@
-@import "tailwindcss" source(".");
-
-@theme {
-	--font-sans:
-		"Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
-		"Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-}
+@import "@heroui/styles";
 
 html,
 body {
-	@apply bg-white dark:bg-gray-950;
+  min-height: 100%;
+  margin: 0;
+}
 
-	@media (prefers-color-scheme: dark) {
-		color-scheme: dark;
-	}
+body {
+  min-width: 320px;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+@layer components {
+  .spinner {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .spinner [data-slot="spinner-icon"] {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.auth-screen,
+.console-screen {
+  min-height: 100vh;
+  padding: 40px;
+}
+
+.center-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-screen {
+  display: grid;
+  grid-template-columns: minmax(0, 680px) minmax(360px, 400px);
+  gap: 24px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  isolation: isolate;
+}
+
+.auth-copy {
+  display: grid;
+  gap: 20px;
+  max-width: 680px;
+}
+
+.auth-copy,
+.auth-card {
+  position: relative;
+  z-index: 1;
+}
+
+.auth-card {
+  width: 100%;
+}
+
+.auth-form,
+.camera-player-shell {
+  display: grid;
+  gap: 12px;
+}
+
+.console-header,
+.header-actions,
+.panel-heading,
+.stage-meta,
+.camera-player-footer,
+.table-cell-stack {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-actions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.page-stack,
+.section-stack,
+.detail-stack,
+.camera-panel-stack {
+  display: grid;
+  gap: 16px;
+}
+
+.page-stack {
+  gap: 24px;
+}
+
+.hero-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px;
+  align-items: end;
+}
+
+.hero-copy,
+.card-copy,
+.empty-copy,
+.camera-title,
+.table-cell-stack {
+  min-width: 0;
+}
+
+.hero-copy {
+  display: grid;
+  gap: 8px;
+}
+
+.chip-inline {
+  align-self: flex-start;
+  justify-self: start;
+  max-width: 100%;
+  width: fit-content;
+}
+
+.header-actions .chip-inline,
+.panel-heading .chip-inline,
+.stage-meta .chip-inline {
+  flex: 0 0 auto;
+}
+
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 300px));
+  gap: 12px;
+  align-items: start;
+  justify-content: start;
+}
+
+.project-card {
+  width: 100%;
+}
+
+.project-card-header {
+  align-items: center;
+  padding: 12px 14px 8px;
+}
+
+.project-card-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 20px;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+}
+
+.project-card-title-group {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.project-card-title,
+.project-card-description {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.project-card-title {
+  line-height: 1.25;
+}
+
+.project-card-description {
+  line-height: 1.2;
+}
+
+.project-card-icon {
+  flex-shrink: 0;
+}
+
+.project-card-content {
+  padding: 6px 14px;
+}
+
+.project-card-footer-section {
+  padding: 8px 14px 12px;
+}
+
+.project-card-body,
+.camera-detail-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.project-card-footer,
+.detail-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pagination-wrap {
+  margin-top: 4px;
+}
+
+.camera-layout {
+  display: grid;
+  grid-template-columns: 360px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.camera-stage-card,
+.camera-player-shell,
+.camera-player-target {
+  min-width: 0;
+  width: 100%;
+}
+
+.camera-player-frame {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.camera-player-target,
+.camera-player-target > .ezplayer {
+  height: 100% !important;
+  width: 100% !important;
+}
+
+.camera-player-target .ezplayer-loading {
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.camera-player-target .ezplayer-loading-text {
+  margin-top: 12px;
+  text-align: center;
+}
+
+.camera-player-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in oklab, var(--surface) 72%, transparent);
+}
+
+.camera-detail-grid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.detail-row {
+  border-bottom: 1px solid var(--separator);
+  padding-block: 10px;
+}
+
+.detail-row:last-child {
+  border-bottom: 0;
+}
+
+.table-cell-stack {
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.camera-tabs {
+  min-width: 0;
+}
+
+@media (max-width: 920px) {
+  .auth-screen,
+  .hero-card,
+  .camera-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .console-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .header-actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 560px) {
+  .auth-screen,
+  .console-screen {
+    padding: 16px;
+  }
+
+  .project-card-footer,
+  .detail-row,
+  .panel-heading,
+  .stage-meta,
+  .camera-player-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 }

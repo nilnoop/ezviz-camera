@@ -331,7 +331,6 @@ function CameraDetailTable({
         <Table.Content aria-label="摄像头详情表">
           <Table.Header>
             <Table.Column isRowHeader>摄像头</Table.Column>
-            <Table.Column>设备序列号</Table.Column>
             <Table.Column>通道</Table.Column>
             <Table.Column>状态</Table.Column>
           </Table.Header>
@@ -349,7 +348,6 @@ function CameraDetailTable({
                     </Typography.Paragraph>
                   </div>
                 </Table.Cell>
-                <Table.Cell>{camera.deviceSerial || "未知设备"}</Table.Cell>
                 <Table.Cell>{camera.channelNo ?? "-"}</Table.Cell>
                 <Table.Cell>
                   <Chip

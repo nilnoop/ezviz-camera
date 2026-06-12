@@ -9,6 +9,7 @@
 	},
 	"upload_source_maps": true,
 	"vars": {
+		"API_ORIGIN": "http://111.228.59.94/oxi-app-ruoyi",
 		"VALUE_FROM_CLOUDFLARE": "Hello from Cloudflare"
 	}
 }

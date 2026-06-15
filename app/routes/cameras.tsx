@@ -121,7 +121,7 @@ export default function CamerasRoute() {
   return (
     <main className="console-screen page-stack">
       <Card>
-        <Card.Content>
+        <Card.Content className="flex-none">
           <div className="hero-card">
             <div className="hero-copy">
               <Chip
@@ -284,32 +284,6 @@ export default function CamerasRoute() {
                 deviceSerial={selectedCamera?.deviceSerial ?? null}
                 channelNo={selectedCamera?.channelNo ?? null}
               />
-            </Card.Content>
-          </Card>
-
-          <Card>
-            <Card.Header>
-              <div className="panel-heading">
-                <div className="card-copy">
-                  <Card.Title>摄像头详情</Card.Title>
-                </div>
-                <Chip className="chip-inline" size="sm">
-                  {cameras.length}
-                </Chip>
-              </div>
-            </Card.Header>
-            <Card.Content>
-              {cameras.length === 0 ? (
-                <EmptyState>
-                  <Camera size={18} aria-hidden="true" />
-                  <Typography.Paragraph>暂无摄像头详情</Typography.Paragraph>
-                </EmptyState>
-              ) : (
-                <CameraDetailTable
-                  cameras={cameras}
-                  selectedIndex={selectedIndex}
-                />
-              )}
             </Card.Content>
           </Card>
         </section>

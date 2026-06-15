@@ -94,10 +94,33 @@ body {
 .camera-panel-stack {
   display: grid;
   gap: 16px;
+  align-content: start;
 }
 
 .page-stack {
   gap: 24px;
+}
+
+.projects-screen {
+  width: min(100%, 1180px);
+  margin-inline: auto;
+}
+
+.projects-header {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.projects-title-group {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.projects-title {
+  line-height: 1.1;
 }
 
 .hero-card {
@@ -133,32 +156,42 @@ body {
   flex: 0 0 auto;
 }
 
+.header-actions .chip-inline {
+  align-self: center;
+}
+
 .project-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 300px));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 520px));
+  gap: 14px;
   align-items: start;
   justify-content: start;
 }
 
 .project-card {
   width: 100%;
+  border-radius: 8px;
 }
 
-.project-card-header {
-  align-items: center;
-  padding: 12px 14px 8px;
-}
-
-.project-card-heading {
+.project-card-content {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 20px;
-  gap: 12px;
+  grid-template-columns: 44px minmax(0, 1fr) auto auto;
+  gap: 14px;
   align-items: center;
-  width: 100%;
+  padding: 14px 16px;
 }
 
-.project-card-title-group {
+.project-card-icon-box {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  place-items: center;
+  background: var(--accent-soft);
+  color: var(--accent-soft-foreground);
+}
+
+.project-card-copy {
   display: grid;
   gap: 2px;
   min-width: 0;
@@ -179,30 +212,22 @@ body {
   line-height: 1.2;
 }
 
-.project-card-icon {
-  flex-shrink: 0;
-}
-
-.project-card-content {
-  padding: 6px 14px;
-}
-
-.project-card-footer-section {
-  padding: 8px 14px 12px;
-}
-
-.project-card-body,
 .camera-detail-grid {
   display: grid;
   gap: 12px;
 }
 
-.project-card-footer,
 .detail-row {
   display: flex;
   gap: 12px;
   align-items: center;
   justify-content: space-between;
+}
+
+.project-card-status,
+.project-card-action {
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 .pagination-wrap {
@@ -302,12 +327,21 @@ body {
     padding: 16px;
   }
 
-  .project-card-footer,
   .detail-row,
   .panel-heading,
   .stage-meta,
   .camera-player-footer {
     align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .projects-header,
+  .project-card-content {
+    align-items: flex-start;
+    grid-template-columns: 1fr;
+  }
+
+  .projects-header {
     flex-direction: column;
   }
 }

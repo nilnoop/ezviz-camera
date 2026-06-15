@@ -48,68 +48,68 @@ export default function ProjectsRoute() {
   }
 
   return (
-    <main className="console-screen page-stack">
-      <Card>
-        <Card.Content>
-          <div className="hero-card">
-            <div className="hero-copy">
-              <Typography.Heading level={1}>项目列表</Typography.Heading>
-            </div>
-            <div className="header-actions">
-              <Chip className="chip-inline">
-                {session?.user?.loginName || "已登录"}
-              </Chip>
-              <span title="退出登录">
-                <Button isIconOnly onPress={logout} aria-label="退出登录">
-                  <LogOut size={18} aria-hidden="true" />
-                </Button>
-              </span>
-            </div>
-          </div>
-        </Card.Content>
-      </Card>
+    <main className="console-screen page-stack projects-screen">
+      <header className="projects-header">
+        <div className="projects-title-group">
+          <Typography.Heading className="projects-title" level={1}>
+            项目列表
+          </Typography.Heading>
+          <Typography.Paragraph color="muted" size="sm">
+            {totalProjects} 个项目
+          </Typography.Paragraph>
+        </div>
+        <div className="header-actions">
+          <Chip className="chip-inline">
+            {session?.user?.loginName || "已登录"}
+          </Chip>
+          <span title="退出登录">
+            <Button
+              isIconOnly
+              variant="ghost"
+              onPress={logout}
+              aria-label="退出登录"
+            >
+              <LogOut size={18} aria-hidden="true" />
+            </Button>
+          </span>
+        </div>
+      </header>
 
       <section className="section-stack" aria-label="项目列表">
         <div className="project-grid">
           {visibleProjects.map((project) => (
             <Card key={project.projectId} className="project-card">
-              <Card.Header className="project-card-header">
-                <div className="project-card-heading">
-                  <div className="project-card-title-group">
-                    <Card.Title className="project-card-title">
-                      {project.name}
-                    </Card.Title>
-                    <Card.Description className="project-card-description">
-                      {project.projectId}
-                    </Card.Description>
-                  </div>
-                  <FolderKanban
-                    className="project-card-icon"
-                    size={20}
-                    aria-hidden="true"
-                  />
-                </div>
-              </Card.Header>
               <Card.Content className="project-card-content">
-                <div className="project-card-body">
-                  <Chip className="chip-inline" color="success" size="sm">
-                    可查看
-                  </Chip>
+                <div className="project-card-icon-box" aria-hidden="true">
+                  <FolderKanban size={20} />
                 </div>
+                <div className="project-card-copy">
+                  <Card.Title className="project-card-title">
+                    {project.name}
+                  </Card.Title>
+                  <Card.Description className="project-card-description">
+                    {project.projectId}
+                  </Card.Description>
+                </div>
+                <Chip
+                  className="project-card-status"
+                  color="success"
+                  size="sm"
+                  variant="soft"
+                >
+                  可查看
+                </Chip>
+                <Button
+                  className="project-card-action"
+                  size="sm"
+                  onPress={() => {
+                    void navigate(`/projects/${project.projectId}/cameras`);
+                  }}
+                >
+                  <span>查看摄像头</span>
+                  <ArrowRight size={16} aria-hidden="true" />
+                </Button>
               </Card.Content>
-              <Card.Footer className="project-card-footer-section">
-                <div className="project-card-footer">
-                  <Button
-                    size="sm"
-                    onPress={() => {
-                      void navigate(`/projects/${project.projectId}/cameras`);
-                    }}
-                  >
-                    <span>查看摄像头</span>
-                    <ArrowRight size={16} aria-hidden="true" />
-                  </Button>
-                </div>
-              </Card.Footer>
             </Card>
           ))}
         </div>

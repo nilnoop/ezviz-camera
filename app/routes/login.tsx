@@ -20,7 +20,7 @@ import { login } from "../lib/api";
 import { useRedirectAuthedUser } from "../hooks/use-auth-redirect";
 
 export function meta() {
-  return [{ title: "萤石视频登录" }, { name: "description", content: "登录" }];
+  return [{ title: "视频登录" }, { name: "description", content: "登录" }];
 }
 
 export default function LoginRoute() {
@@ -60,7 +60,7 @@ export default function LoginRoute() {
       <section className="auth-copy" aria-label="系统概览">
         <div className="hero-copy">
           <Chip className="chip-inline" color="success" size="sm">
-            萤石视频
+            氧屋东西
           </Chip>
           <Typography.Heading level={1}>摄像头播放控制台</Typography.Heading>
         </div>

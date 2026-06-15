@@ -66,10 +66,6 @@ export default function LoginRoute() {
         </div>
       </section>
       <Card className="auth-card">
-        <Card.Header>
-          <Card.Title>登录</Card.Title>
-          <Card.Description>使用账号密码进入摄像头控制台</Card.Description>
-        </Card.Header>
         <Card.Content>
           <form className="auth-form" onSubmit={handleSubmit}>
             <TextField fullWidth>

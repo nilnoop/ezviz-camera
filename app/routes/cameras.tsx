@@ -132,9 +132,6 @@ export default function CamerasRoute() {
                 {loadFailed ? "加载异常" : "项目摄像头"}
               </Chip>
               <Typography.Heading level={1}>摄像头播放</Typography.Heading>
-              <Typography.Paragraph color="muted">
-                {FIXED_PROJECT_ID}
-              </Typography.Paragraph>
             </div>
             <div className="header-actions">
               <span title="刷新摄像头">

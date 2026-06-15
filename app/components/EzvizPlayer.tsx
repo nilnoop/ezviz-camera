@@ -1,4 +1,5 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react";
+import type { RefObject } from "react";
 import { Chip, Spinner } from "@heroui/react";
 
 import type {
@@ -7,6 +8,11 @@ import type {
 } from "ezuikit-js";
 
 type PlayerStatus = "idle" | "loading" | "ready" | "error";
+
+interface PlayerSize {
+  width: number;
+  height: number;
+}
 
 const livePlayerThemeData = {
   footer: {
@@ -73,6 +79,7 @@ export function EzvizPlayer({
     [reactId],
   );
   const frameRef = useRef<HTMLDivElement>(null);
+  const playerSize = useElementSize(frameRef);
   const [status, setStatus] = useState<PlayerStatus>("idle");
   const [message, setMessage] = useState("等待播放参数");
 
@@ -80,6 +87,12 @@ export function EzvizPlayer({
     if (!url || !accessToken) {
       setStatus("error");
       setMessage("缺少播放参数");
+      return;
+    }
+
+    if (!playerSize) {
+      setStatus("idle");
+      setMessage("等待播放器容器尺寸");
       return;
     }
 
@@ -98,8 +111,6 @@ export function EzvizPlayer({
         if (disposed) {
           return;
         }
-
-        const playerSize = getPlayerSize(frameRef.current, width, height);
 
         player = new EZUIKitPlayer({
           id: containerId,
@@ -139,12 +150,21 @@ export function EzvizPlayer({
         player?.destroy?.();
       } catch {
         // SDK cleanup should not block route transitions.
+      } finally {
+        document.getElementById(containerId)?.replaceChildren();
       }
     };
-  }, [accessToken, channelNo, containerId, deviceSerial, height, url, width]);
+  }, [
+    accessToken,
+    channelNo,
+    containerId,
+    deviceSerial,
+    playerSize,
+    url,
+  ]);
 
   return (
-    <div className="camera-player-shell" style={{ maxWidth: `${width}px` }}>
+    <div className="camera-player-shell">
       <div
         ref={frameRef}
         className="camera-player-frame"
@@ -189,31 +209,61 @@ function statusLabel(status: PlayerStatus) {
   return "待命";
 }
 
-function getPlayerSize(
-  frameElement: HTMLDivElement | null,
-  fallbackWidth: number,
-  fallbackHeight: number,
-) {
-  if (!frameElement) {
-    return {
-      width: fallbackWidth,
-      height: fallbackHeight,
-    };
-  }
+function useElementSize(elementRef: RefObject<HTMLDivElement | null>) {
+  const [size, setSize] = useState<PlayerSize | null>(null);
 
-  const frameRect = frameElement.getBoundingClientRect();
+  useEffect(() => {
+    const element = elementRef.current;
+    if (!element) {
+      return;
+    }
+
+    let animationFrameId = 0;
+
+    function syncSize() {
+      window.cancelAnimationFrame(animationFrameId);
+      animationFrameId = window.requestAnimationFrame(() => {
+        const frameRect = element.getBoundingClientRect();
+        const nextSize = getElementSize(frameRect);
+
+        if (!nextSize) {
+          return;
+        }
+
+        setSize((currentSize) => {
+          if (
+            currentSize?.width === nextSize.width &&
+            currentSize.height === nextSize.height
+          ) {
+            return currentSize;
+          }
+
+          return nextSize;
+        });
+      });
+    }
+
+    syncSize();
+
+    const resizeObserver = new ResizeObserver(syncSize);
+    resizeObserver.observe(element);
+
+    return () => {
+      window.cancelAnimationFrame(animationFrameId);
+      resizeObserver.disconnect();
+    };
+  }, [elementRef]);
+
+  return size;
+}
+
+function getElementSize(frameRect: DOMRect) {
   const measuredWidth = Math.round(frameRect.width);
   const measuredHeight = Math.round(frameRect.height);
 
   if (measuredWidth <= 0 || measuredHeight <= 0) {
-    return {
-      width: fallbackWidth,
-      height: fallbackHeight,
-    };
+    return null;
   }
 
-  return {
-    width: measuredWidth,
-    height: measuredHeight,
-  };
+  return { width: measuredWidth, height: measuredHeight };
 }

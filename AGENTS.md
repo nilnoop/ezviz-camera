@@ -19,3 +19,4 @@
 - 官方 CSS class / BEM class 的语义和可覆盖方式
 
 如果具体组件文档和本地 `@heroui/react` / `@heroui/styles` 类型定义不一致，必须停下来核对当前安装版本和源码类型，不要猜测，也不要混用 v2 API。
+

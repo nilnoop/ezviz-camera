@@ -52,7 +52,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
 
   return (
     <main className="console-screen center-screen">
-      <Card>
+      <Card className="state-card" variant="secondary">
         <Card.Header>
           <Card.Title>{message}</Card.Title>
           <Card.Description>{details}</Card.Description>

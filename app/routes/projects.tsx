@@ -7,7 +7,14 @@ import {
   Spinner,
   Typography,
 } from "@heroui/react";
-import { ArrowRight, FolderKanban, LogOut } from "lucide-react";
+import {
+  ArrowRight,
+  Camera,
+  FolderKanban,
+  Gauge,
+  LogOut,
+  ShieldCheck,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 
@@ -48,18 +55,21 @@ export default function ProjectsRoute() {
   }
 
   return (
-    <main className="console-screen page-stack projects-screen">
-      <header className="projects-header">
-        <div className="projects-title-group">
-          <Typography.Heading className="projects-title" level={1}>
-            项目列表
-          </Typography.Heading>
-          <Typography.Paragraph color="muted" size="sm">
-            {totalProjects} 个项目
-          </Typography.Paragraph>
+    <main className="console-screen projects-screen">
+      <header className="console-topbar">
+        <div className="console-brand">
+          <div className="brand-mark" aria-hidden="true">
+            <Camera size={22} />
+          </div>
+          <div>
+            <span className="eyebrow">EZVIZ CONTROL</span>
+            <Typography.Heading className="page-title" level={1}>
+              项目调度台
+            </Typography.Heading>
+          </div>
         </div>
         <div className="header-actions">
-          <Chip className="chip-inline">
+          <Chip className="chip-inline" variant="soft">
             {session?.user?.loginName || "已登录"}
           </Chip>
           <span title="退出登录">
@@ -75,10 +85,51 @@ export default function ProjectsRoute() {
         </div>
       </header>
 
+      <section className="command-strip" aria-label="项目总览">
+        <div className="command-copy">
+          <Chip className="chip-inline signal-chip" color="success" size="sm">
+            已授权
+          </Chip>
+          <Typography.Heading className="command-title" level={2}>
+            选择项目进入摄像头播放
+          </Typography.Heading>
+          <Typography.Paragraph className="command-summary" color="muted">
+            当前账号可查看 {totalProjects} 个项目。
+          </Typography.Paragraph>
+        </div>
+        <div className="telemetry-grid" aria-label="项目状态">
+          <MetricTile
+            icon={<FolderKanban size={18} aria-hidden="true" />}
+            label="项目"
+            value={String(totalProjects)}
+          />
+          <MetricTile
+            icon={<ShieldCheck size={18} aria-hidden="true" />}
+            label="会话"
+            value="有效"
+          />
+          <MetricTile
+            icon={<Gauge size={18} aria-hidden="true" />}
+            label="分页"
+            value={`${currentPage}/${pageCount}`}
+          />
+        </div>
+      </section>
+
       <section className="section-stack" aria-label="项目列表">
+        <div className="section-heading">
+          <div>
+            <Typography.Heading level={2}>项目列表</Typography.Heading>
+            <Typography.Paragraph color="muted" size="sm">
+              {totalProjects === 0
+                ? "暂无项目"
+                : `${firstProjectNumber}-${lastProjectNumber} / ${totalProjects}`}
+            </Typography.Paragraph>
+          </div>
+        </div>
         <div className="project-grid">
           {visibleProjects.map((project) => (
-            <Card key={project.projectId} className="project-card">
+            <Card key={project.projectId} className="project-card" variant="secondary">
               <Card.Content className="project-card-content">
                 <div className="project-card-icon-box" aria-hidden="true">
                   <FolderKanban size={20} />
@@ -124,6 +175,24 @@ export default function ProjectsRoute() {
         />
       </section>
     </main>
+  );
+}
+
+function MetricTile({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="metric-tile">
+      <div className="metric-icon">{icon}</div>
+      <span>{label}</span>
+      <strong>{value}</strong>
+    </div>
   );
 }
 

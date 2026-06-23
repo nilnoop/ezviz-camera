@@ -160,6 +160,7 @@ dist
 
 # Serverless directories
 .serverless/
+.codex
 
 # FuseBox cache
 .fusebox/

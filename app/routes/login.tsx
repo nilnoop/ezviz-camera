@@ -12,7 +12,7 @@ import {
   Typography,
   toast,
 } from "@heroui/react";
-import { LogIn } from "lucide-react";
+import { Camera, LockKeyhole, LogIn, Radar, ShieldCheck } from "lucide-react";
 import { useNavigate } from "react-router";
 
 import { setAuthSession } from "../lib/auth";
@@ -57,33 +57,64 @@ export default function LoginRoute() {
 
   return (
     <main className="auth-screen">
-      <section className="auth-copy" aria-label="系统概览">
-        <div className="hero-copy">
-          <Chip className="chip-inline" color="success" size="sm">
+      <section className="auth-brief" aria-label="系统概览">
+        <div className="brand-mark" aria-hidden="true">
+          <Camera size={24} />
+        </div>
+        <div className="auth-copy">
+          <Chip className="chip-inline signal-chip" color="success" size="sm">
             氧屋东西
           </Chip>
-          <Typography.Heading level={1}>摄像头播放控制台</Typography.Heading>
+          <Typography.Heading className="auth-title" level={1}>
+            摄像头播放控制台
+          </Typography.Heading>
+          <Typography.Paragraph className="auth-summary" color="muted">
+            项目摄像头集中播放、授权校验和实时画面调度入口。
+          </Typography.Paragraph>
+        </div>
+        <div className="auth-signal-grid" aria-label="平台能力">
+          <div className="signal-card">
+            <ShieldCheck size={18} aria-hidden="true" />
+            <span>授权访问</span>
+          </div>
+          <div className="signal-card">
+            <Radar size={18} aria-hidden="true" />
+            <span>实时拉流</span>
+          </div>
+          <div className="signal-card">
+            <LockKeyhole size={18} aria-hidden="true" />
+            <span>会话保护</span>
+          </div>
         </div>
       </section>
-      <Card className="auth-card">
+
+      <Card className="auth-card" variant="secondary">
+        <Card.Header>
+          <div className="card-copy">
+            <Card.Title>登录</Card.Title>
+            <Card.Description>使用已授权账号进入控制台</Card.Description>
+          </div>
+        </Card.Header>
         <Card.Content>
           <form className="auth-form" onSubmit={handleSubmit}>
-            <TextField fullWidth>
+            <TextField className="field-stack" fullWidth>
               <Label>账号</Label>
               <Input
                 name="loginName"
                 autoComplete="username"
+                variant="secondary"
                 placeholder="请输入账号"
                 value={loginName}
                 onChange={(event) => setLoginName(event.target.value)}
               />
             </TextField>
-            <TextField fullWidth>
+            <TextField className="field-stack" fullWidth>
               <Label>密码</Label>
               <Input
                 name="password"
                 type="password"
                 autoComplete="current-password"
+                variant="secondary"
                 placeholder="请输入密码"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
@@ -96,7 +127,7 @@ export default function LoginRoute() {
                 </Alert.Content>
               </Alert>
             )}
-            <Button fullWidth type="submit" isDisabled={submitting}>
+            <Button fullWidth type="submit" isDisabled={submitting} size="lg">
               {submitting ? (
                 <Spinner color="current" size="sm" />
               ) : (

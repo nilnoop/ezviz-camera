@@ -1,6 +1,7 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import type { RefObject } from "react";
 import { Chip, Spinner } from "@heroui/react";
+import { CircleAlert, PlayCircle, RadioTower } from "lucide-react";
 
 import type {
   EZUIKitPlayerConstructor,
@@ -96,6 +97,7 @@ export function EzvizPlayer({
       return;
     }
 
+    const measuredPlayerSize = playerSize;
     let disposed = false;
     let player: EZUIKitPlayerInstance | null = null;
 
@@ -116,8 +118,8 @@ export function EzvizPlayer({
           id: containerId,
           accessToken,
           url,
-          width: playerSize.width,
-          height: playerSize.height,
+          width: measuredPlayerSize.width,
+          height: measuredPlayerSize.height,
           language: "zh",
           themeData: livePlayerThemeData,
           deviceSerial: deviceSerial ?? undefined,
@@ -173,24 +175,40 @@ export function EzvizPlayer({
         <div id={containerId} className="camera-player-target" />
         {status !== "ready" && (
           <div className="camera-player-overlay">
-            {status === "loading" && <Spinner size="sm" />}
+            <div className="player-overlay-icon" aria-hidden="true">
+              {status === "loading" ? (
+                <Spinner color="current" size="sm" />
+              ) : status === "error" ? (
+                <CircleAlert size={18} />
+              ) : (
+                <PlayCircle size={18} />
+              )}
+            </div>
             <span>{message}</span>
           </div>
         )}
       </div>
       <div className="camera-player-footer">
-        <Chip
-          color={
-            status === "ready"
-              ? "success"
-              : status === "error"
-                ? "danger"
-                : "warning"
-          }
-          size="sm"
-        >
-          {statusLabel(status)}
-        </Chip>
+        <div className="player-live-mark">
+          <RadioTower size={16} aria-hidden="true" />
+          <span>{deviceSerial || "未知设备"}</span>
+        </div>
+        <div className="player-footer-meta">
+          <span>通道 {channelNo ?? "-"}</span>
+          <Chip
+            color={
+              status === "ready"
+                ? "success"
+                : status === "error"
+                  ? "danger"
+                  : "warning"
+            }
+            size="sm"
+            variant="soft"
+          >
+            {statusLabel(status)}
+          </Chip>
+        </div>
       </div>
     </div>
   );
@@ -217,13 +235,14 @@ function useElementSize(elementRef: RefObject<HTMLDivElement | null>) {
     if (!element) {
       return;
     }
+    const observedElement: HTMLDivElement = element;
 
     let animationFrameId = 0;
 
     function syncSize() {
       window.cancelAnimationFrame(animationFrameId);
       animationFrameId = window.requestAnimationFrame(() => {
-        const frameRect = element.getBoundingClientRect();
+        const frameRect = observedElement.getBoundingClientRect();
         const nextSize = getElementSize(frameRect);
 
         if (!nextSize) {
@@ -246,7 +265,7 @@ function useElementSize(elementRef: RefObject<HTMLDivElement | null>) {
     syncSize();
 
     const resizeObserver = new ResizeObserver(syncSize);
-    resizeObserver.observe(element);
+    resizeObserver.observe(observedElement);
 
     return () => {
       window.cancelAnimationFrame(animationFrameId);

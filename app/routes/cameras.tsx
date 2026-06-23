@@ -5,18 +5,18 @@ import {
   Chip,
   EmptyState,
   ListBox,
-  Separator,
   Spinner,
-  Table,
   Typography,
   toast,
 } from "@heroui/react";
 import {
   ArrowLeft,
   Camera,
+  CircleDot,
   LogOut,
   RefreshCw,
   RotateCw,
+  Rows3,
   Video,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router";
@@ -99,7 +99,7 @@ export default function CamerasRoute() {
   if (!knownProject) {
     return (
       <main className="console-screen center-screen">
-        <Card>
+        <Card className="state-card" variant="secondary">
           <Card.Header>
             <Card.Title>项目不存在</Card.Title>
           </Card.Header>
@@ -119,62 +119,110 @@ export default function CamerasRoute() {
   }
 
   return (
-    <main className="console-screen page-stack">
-      <Card>
-        <Card.Content className="flex-none">
-          <div className="hero-card">
-            <div className="hero-copy">
-              <Chip
-                className="chip-inline"
-                color={loadFailed ? "warning" : "success"}
-                size="sm"
-              >
-                {loadFailed ? "加载异常" : "项目摄像头"}
-              </Chip>
-              <Typography.Heading level={1}>摄像头播放</Typography.Heading>
-            </div>
-            <div className="header-actions">
-              <span title="刷新摄像头">
-                <Button
-                  isIconOnly
-                  isDisabled={loading}
-                  onPress={() => void loadCameras()}
-                  aria-label="刷新摄像头"
-                >
-                  {loading ? (
-                    <Spinner
-                      color="current"
-                      size="sm"
-                      aria-label="正在刷新摄像头"
-                    />
-                  ) : (
-                    <RefreshCw size={18} aria-hidden="true" />
-                  )}
-                </Button>
-              </span>
-              <span title="返回项目列表">
-                <Button
-                  isIconOnly
-                  onPress={() => {
-                    void navigate("/projects");
-                  }}
-                  aria-label="返回项目列表"
-                >
-                  <ArrowLeft size={18} aria-hidden="true" />
-                </Button>
-              </span>
-              <span title="退出登录">
-                <Button isIconOnly onPress={logout} aria-label="退出登录">
-                  <LogOut size={18} aria-hidden="true" />
-                </Button>
-              </span>
-            </div>
+    <main className="console-screen camera-screen">
+      <header className="console-topbar">
+        <div className="console-brand">
+          <div className="brand-mark" aria-hidden="true">
+            <Video size={22} />
           </div>
-        </Card.Content>
-      </Card>
+          <div>
+            <span className="eyebrow">LIVE VIEW</span>
+            <Typography.Heading className="page-title" level={1}>
+              摄像头播放
+            </Typography.Heading>
+          </div>
+        </div>
+        <div className="header-actions">
+          <Chip
+            className="chip-inline"
+            color={loadFailed ? "warning" : "success"}
+            size="sm"
+            variant="soft"
+          >
+            {loadFailed ? "加载异常" : "项目摄像头"}
+          </Chip>
+          <span title="刷新摄像头">
+            <Button
+              isIconOnly
+              isDisabled={loading}
+              onPress={() => void loadCameras()}
+              aria-label="刷新摄像头"
+            >
+              {loading ? (
+                <Spinner
+                  color="current"
+                  size="sm"
+                  aria-label="正在刷新摄像头"
+                />
+              ) : (
+                <RefreshCw size={18} aria-hidden="true" />
+              )}
+            </Button>
+          </span>
+          <span title="返回项目列表">
+            <Button
+              isIconOnly
+              variant="ghost"
+              onPress={() => {
+                void navigate("/projects");
+              }}
+              aria-label="返回项目列表"
+            >
+              <ArrowLeft size={18} aria-hidden="true" />
+            </Button>
+          </span>
+          <span title="退出登录">
+            <Button
+              isIconOnly
+              variant="ghost"
+              onPress={logout}
+              aria-label="退出登录"
+            >
+              <LogOut size={18} aria-hidden="true" />
+            </Button>
+          </span>
+        </div>
+      </header>
+
+      <section
+        className="command-strip camera-command-strip"
+        aria-label="播放总览"
+      >
+        <div className="command-copy">
+          <Chip className="chip-inline signal-chip" color="success" size="sm">
+            {loading ? "刷新中" : "实时画面"}
+          </Chip>
+          <Typography.Heading className="command-title" level={2}>
+            {selectedCamera?.spaceName || "等待选择摄像头"}
+          </Typography.Heading>
+          <Typography.Paragraph className="command-summary" color="muted">
+            {selectedCamera
+              ? `${selectedCamera.deviceSerial || "未知设备"} / 通道 ${
+                  selectedCamera.channelNo ?? "-"
+                }`
+              : "摄像头加载后显示播放信息"}
+          </Typography.Paragraph>
+        </div>
+        <div className="telemetry-grid" aria-label="摄像头状态">
+          <MetricTile
+            icon={<Rows3 size={18} aria-hidden="true" />}
+            label="摄像头"
+            value={String(cameras.length)}
+          />
+          <MetricTile
+            icon={<CircleDot size={18} aria-hidden="true" />}
+            label="当前"
+            value={selectedCamera ? String(selectedIndex + 1) : "-"}
+          />
+        </div>
+      </section>
 
       <section className="camera-layout">
-        <Card aria-label="摄像头列表">
+        <Card
+          className="camera-list-card"
+          aria-label="摄像头列表"
+          variant="secondary"
+        >
           <Card.Header>
             <div className="panel-heading">
               <div className="card-copy">
@@ -189,7 +237,6 @@ export default function CamerasRoute() {
             </div>
           </Card.Header>
           <Card.Content aria-busy={loading}>
-            <Separator />
             {loading && <CameraLoadingState label="正在加载摄像头" />}
             {!loading && loadFailed && cameras.length === 0 && (
               <EmptyState>
@@ -227,11 +274,14 @@ export default function CamerasRoute() {
               >
                 {cameras.map((camera, index) => (
                   <ListBox.Item
+                    className="camera-list-item"
                     id={String(index)}
                     key={cameraKey(camera, index)}
                     textValue={camera.spaceName || "未命名空间"}
                   >
-                    <Video size={18} aria-hidden="true" />
+                    <span className="camera-list-icon" aria-hidden="true">
+                      <Video size={18} />
+                    </span>
                     <span className="table-cell-stack">
                       <span data-slot="label">
                         {camera.spaceName || "未命名空间"}
@@ -250,7 +300,7 @@ export default function CamerasRoute() {
         </Card>
 
         <section className="detail-stack" aria-label="摄像头播放与详情">
-          <Card className="camera-stage-card">
+          <Card className="camera-stage-card" variant="secondary">
             <Card.Header>
               <div className="stage-meta">
                 <div className="camera-title">
@@ -265,13 +315,14 @@ export default function CamerasRoute() {
                       : "选择摄像头后显示播放状态"}
                   </Card.Description>
                 </div>
-                {/* <Chip
+                <Chip
                   className="chip-inline"
                   color={selectedCamera ? "success" : "warning"}
                   size="sm"
+                  variant="soft"
                 >
                   {selectedCamera ? "可播放" : "待选择"}
-                </Chip> */}
+                </Chip>
               </div>
             </Card.Header>
             <Card.Content>
@@ -289,52 +340,21 @@ export default function CamerasRoute() {
   );
 }
 
-function CameraDetailTable({
-  cameras,
-  selectedIndex,
+function MetricTile({
+  icon,
+  label,
+  value,
 }: {
-  cameras: CameraLiveAddress[];
-  selectedIndex: number;
+  icon: React.ReactNode;
+  label: string;
+  value: string;
 }) {
   return (
-    <Table>
-      <Table.ScrollContainer>
-        <Table.Content aria-label="摄像头详情表">
-          <Table.Header>
-            <Table.Column isRowHeader>摄像头</Table.Column>
-            <Table.Column>通道</Table.Column>
-            <Table.Column>状态</Table.Column>
-          </Table.Header>
-          <Table.Body>
-            {cameras.map((camera, index) => (
-              <Table.Row
-                id={cameraKey(camera, index)}
-                key={cameraKey(camera, index)}
-              >
-                <Table.Cell>
-                  <div className="table-cell-stack">
-                    <span>{camera.spaceName || "未命名空间"}</span>
-                    <Typography.Paragraph size="xs" color="muted">
-                      第 {index + 1} 路
-                    </Typography.Paragraph>
-                  </div>
-                </Table.Cell>
-                <Table.Cell>{camera.channelNo ?? "-"}</Table.Cell>
-                <Table.Cell>
-                  <Chip
-                    className="chip-inline"
-                    color={index === selectedIndex ? "success" : "warning"}
-                    size="sm"
-                  >
-                    {index === selectedIndex ? "当前播放" : "待切换"}
-                  </Chip>
-                </Table.Cell>
-              </Table.Row>
-            ))}
-          </Table.Body>
-        </Table.Content>
-      </Table.ScrollContainer>
-    </Table>
+    <div className="metric-tile">
+      <div className="metric-icon">{icon}</div>
+      <span>{label}</span>
+      <strong>{value}</strong>
+    </div>
   );
 }
 

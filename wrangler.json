@@ -7,6 +7,14 @@
 	"observability": {
 		"enabled": true
 	},
+	"d1_databases": [
+		{
+			"binding": "CALLBACK_DB",
+			"database_name": "ezviz-camera-callbacks",
+			"database_id": "96dfb8cc-1cfd-4260-848a-cab5c8cd7526",
+			"migrations_dir": "migrations"
+		}
+	],
 	"upload_source_maps": true,
 	"vars": {
 		"VALUE_FROM_CLOUDFLARE": "Hello from Cloudflare"
